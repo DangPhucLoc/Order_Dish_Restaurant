@@ -1,0 +1,41 @@
+spring:
+  application:
+    name: FTM_Project
+    security:
+      jwt:
+        sign-in-key: 1cac5f8bc9d89152c6bb99d820e0f485950bb9fea6db629b2f495303a4acf1c1
+        expiration: 86400000
+        refresh:
+          expiration: 604800000
+    mailing:
+      frontend:
+        activation-url: http://localhost:4200/activate-account
+
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: ${DB_DRIVER}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: doanvinhphu321@gmail.com
+    password: tnek bsto lwyq webh
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML5
+    cache: false

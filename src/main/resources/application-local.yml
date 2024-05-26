@@ -1,0 +1,35 @@
+spring:
+  application:
+    name: FTM_Project
+    security:
+      jwt:
+        sign-in-key: 1cac5f8bc9d89152c6bb99d820e0f485950bb9fea6db629b2f495303a4acf1c1
+        expiration: 86400000
+        refresh:
+          expiration: 604800000
+    mailing:
+      frontend:
+        activation-url: http://localhost:4200/activate-account
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/OrderDishesRestaurantLocal
+    username: postgres
+    password: sa
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: doanvinhphu321@gmail.com
+    password: tnek bsto lwyq webh
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
