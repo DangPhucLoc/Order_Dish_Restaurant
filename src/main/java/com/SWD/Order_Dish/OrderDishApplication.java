@@ -2,7 +2,7 @@ package com.SWD.Order_Dish;
 
 import com.SWD.Order_Dish.enums.Role;
 import com.SWD.Order_Dish.model.authentication.RegisterRequest;
-import com.SWD.Order_Dish.repository.UserRepository;
+import com.SWD.Order_Dish.repository.AccountRepository;
 import com.SWD.Order_Dish.service.AuthenticationService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -20,7 +20,7 @@ public class OrderDishApplication {
 		SpringApplication.run(OrderDishApplication.class, args);
 	}
 	@Bean
-	public CommandLineRunner run(AuthenticationService authenticationService, UserRepository accountRepository) {
+	public CommandLineRunner run(AuthenticationService authenticationService, AccountRepository accountRepository) {
 		return args -> {
 			if (accountRepository.findByEmail("admin@gmail.com").isEmpty()) {
 				var admin = RegisterRequest.builder()

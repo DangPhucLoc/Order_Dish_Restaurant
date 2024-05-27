@@ -2,7 +2,7 @@ package com.SWD.Order_Dish.service;
 
 import com.SWD.Order_Dish.entity.ConfirmationTokenEntity;
 import com.SWD.Order_Dish.entity.JwtTokenEntity;
-import com.SWD.Order_Dish.entity.UserEntity;
+import com.SWD.Order_Dish.entity.AccountEntity;
 import com.SWD.Order_Dish.enums.EmailTemplateName;
 import com.SWD.Order_Dish.enums.ResponseMessageEnum;
 import com.SWD.Order_Dish.enums.Role;
@@ -13,7 +13,7 @@ import com.SWD.Order_Dish.model.authentication.RegisterRequest;
 import com.SWD.Order_Dish.model.authentication.RegisterResponse;
 import com.SWD.Order_Dish.repository.ConfirmationTokenRepository;
 import com.SWD.Order_Dish.repository.JwtTokenRepository;
-import com.SWD.Order_Dish.repository.UserRepository;
+import com.SWD.Order_Dish.repository.AccountRepository;
 import com.SWD.Order_Dish.util.DateProcess;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.mail.MessagingException;
@@ -35,14 +35,12 @@ import java.security.SecureRandom;
 import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService implements LogoutHandler {
     private final Logger LOGGER = LoggerFactory.getLogger(AuthenticationService.class);
-    private final UserRepository userRepository;
+    private final AccountRepository accountRepository;
     private final JwtTokenRepository jwtTokenRepository;
     private final ConfirmationTokenRepository confirmationTokenRepository;
     private final PasswordEncoder passwordEncoder;
@@ -57,7 +55,7 @@ public class AuthenticationService implements LogoutHandler {
         LOGGER.info("Authenticate user");
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
-        UserEntity account = userRepository.findByEmail(request.getEmail()).orElseThrow();
+        AccountEntity account = accountRepository.findByEmail(request.getEmail()).orElseThrow();
         String jwtToken = jwtService.generateToken(account);
         String refreshToken = jwtService.generateRefreshToken(account);
         invalidateAllAccountTokens(account);
@@ -69,20 +67,19 @@ public class AuthenticationService implements LogoutHandler {
     }
 
     public RegisterResponse register(RegisterRequest request) throws MessagingException, ParseException {
-        if((userRepository.findUserEntityByEmail(request.getEmail())) != null) {
-            UserEntity user = userRepository.findUserEntityByEmail(request.getEmail());
+        if((accountRepository.findAccountEntityByEmail(request.getEmail())) != null) {
             LOGGER.warn("Email has been used: {}", request.getEmail());
             return RegisterResponse.builder()
                     .responseMessage(ResponseMessageEnum.DUPLICATED_EMAIL.getDetail())
                     .build();
         }
-        if((userRepository.findUserEntityByPhoneNumber(request.getPhoneNumber())) != null){
+        if((accountRepository.findAccountEntityByPhoneNumber(request.getPhoneNumber())) != null){
             LOGGER.warn("Phone number has been used: {}", request.getPhoneNumber());
             return RegisterResponse.builder()
                     .responseMessage(ResponseMessageEnum.DUPLICATED_PHONE_NUMBER.getDetail())
                     .build();
         }
-        UserEntity account = UserEntity.builder()
+        AccountEntity account = AccountEntity.builder()
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .fullName(request.getDisplayName())
@@ -94,7 +91,7 @@ public class AuthenticationService implements LogoutHandler {
                 .address(request.getAddress())
                 .phoneNumber(request.getPhoneNumber())
                 .build();
-        UserEntity accountBeCreated = userRepository.save(account);
+        AccountEntity accountBeCreated = accountRepository.save(account);
         String jwtToken = jwtService.generateToken(account);
         String refreshToken = jwtService.generateRefreshToken(account);
         saveAccountToken(accountBeCreated, jwtToken, refreshToken);
@@ -106,7 +103,7 @@ public class AuthenticationService implements LogoutHandler {
                 .build();
     }
 
-    private void sendValidationEmail(UserEntity accountBeCreated) throws MessagingException {
+    private void sendValidationEmail(AccountEntity accountBeCreated) throws MessagingException {
         String generatedToken = saveConfirmationToken(accountBeCreated, 6, 86400L, TokenType.CONFIRMATION_TOKEN);
         emailService.sendEmail(
                 accountBeCreated.getEmail(),
@@ -118,18 +115,18 @@ public class AuthenticationService implements LogoutHandler {
     }
 
     public void reSendValidationEmail(String email) throws MessagingException {
-        UserEntity account = userRepository.findByEmail(email)
+        AccountEntity account = accountRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Account not exists"));
         sendValidationEmail(account);
     }
 
-    private String saveConfirmationToken(UserEntity account, Integer length, Long lifetime, TokenType type) {
+    private String saveConfirmationToken(AccountEntity account, Integer length, Long lifetime, TokenType type) {
         String generatedToken = generateCode(length);
         ConfirmationTokenEntity tokenEntity = ConfirmationTokenEntity.builder()
                 .token(generatedToken)
                 .createdAt(LocalDateTime.now())
                 .expiredAt(LocalDateTime.now().plusSeconds(lifetime))
-                .userEntity(account)
+                .accountEntity(account)
                 .tokenType(type)
                 .build();
         confirmationTokenRepository.save(tokenEntity);
@@ -146,9 +143,9 @@ public class AuthenticationService implements LogoutHandler {
         return code.toString();
     }
 
-    private void saveAccountToken(UserEntity account, String jwtToken) {
+    private void saveAccountToken(AccountEntity account, String jwtToken) {
         JwtTokenEntity accessToken = JwtTokenEntity.builder()
-                .userEntity(account)
+                .accountEntity(account)
                 .token(jwtToken)
                 .tokenType(TokenType.ACCESS_TOKEN)
                 .isRevoked(false)
@@ -157,10 +154,10 @@ public class AuthenticationService implements LogoutHandler {
         jwtTokenRepository.save(accessToken);
     }
 
-    private void saveAccountToken(UserEntity account, String jwtToken, String refreshToken) {
+    private void saveAccountToken(AccountEntity account, String jwtToken, String refreshToken) {
         saveAccountToken(account, jwtToken);
         JwtTokenEntity refreshTokenEntity = JwtTokenEntity.builder()
-                .userEntity(account)
+                .accountEntity(account)
                 .token(refreshToken)
                 .tokenType(TokenType.REFRESH_TOKEN)
                 .isRevoked(false)
@@ -169,9 +166,9 @@ public class AuthenticationService implements LogoutHandler {
         jwtTokenRepository.save(refreshTokenEntity);
     }
 
-    private void invalidateAllAccountTokens(UserEntity account) {
+    private void invalidateAllAccountTokens(AccountEntity account) {
         List<JwtTokenEntity> currentValidTokens = jwtTokenRepository
-                .findAllByUserEntity_UserIdAndIsExpiredFalseAndIsRevokedFalse(account.getUserId());
+                .findAllByAccountEntity_UserIdAndIsExpiredFalseAndIsRevokedFalse(account.getUserId());
         if (currentValidTokens.isEmpty()) {
             return;
         }
@@ -183,9 +180,9 @@ public class AuthenticationService implements LogoutHandler {
         jwtTokenRepository.saveAll(currentValidTokens);
     }
 
-    private void invalidateAllAccessTokens(UserEntity account) {
+    private void invalidateAllAccessTokens(AccountEntity account) {
         List<JwtTokenEntity> currentAccessTokens = jwtTokenRepository
-                .findAllByUserEntity_UserIdAndTokenTypeAndIsExpiredFalseAndIsRevokedFalse(
+                .findAllByAccountEntity_UserIdAndTokenTypeAndIsExpiredFalseAndIsRevokedFalse(
                         account.getUserId(), TokenType.ACCESS_TOKEN);
         if (currentAccessTokens.isEmpty()) {
             return;
@@ -213,8 +210,8 @@ public class AuthenticationService implements LogoutHandler {
             jwtTokenRepository.save(currentStoredJwtToken);
 
             // Revoke refresh token
-            List<JwtTokenEntity> refreshTokens = jwtTokenRepository.findAllByUserEntity_UserIdAndTokenType(
-                    currentStoredJwtToken.getUserEntity().getUserId(), TokenType.REFRESH_TOKEN);
+            List<JwtTokenEntity> refreshTokens = jwtTokenRepository.findAllByAccountEntity_UserIdAndTokenType(
+                    currentStoredJwtToken.getAccountEntity().getUserId(), TokenType.REFRESH_TOKEN);
             refreshTokens.forEach(refreshToken -> {
                 refreshToken.setIsRevoked(true);
                 refreshToken.setIsExpired(true);
@@ -237,7 +234,7 @@ public class AuthenticationService implements LogoutHandler {
         // ? if userEmail is not null or user is not yet authenticated (not log in yet),
         // get user from database
         if (userEmail != null) {
-            UserEntity account = userRepository.findByEmail(userEmail).orElseThrow();
+            AccountEntity account = accountRepository.findByEmail(userEmail).orElseThrow();
             if (jwtService.isTokenValid(refreshToken, account)) {
                 String newJwtToken = jwtService.generateToken(account);
                 invalidateAllAccessTokens(account);
@@ -258,15 +255,15 @@ public class AuthenticationService implements LogoutHandler {
         if (LocalDateTime.now().isAfter(confirmationTokenEntity.getExpiredAt())) {
             throw new RuntimeException("Validation code expired");
         }
-        UserEntity account = confirmationTokenEntity.getUserEntity();
+        AccountEntity account = confirmationTokenEntity.getAccountEntity();
         account.setIsEnable(true);
-        userRepository.save(account);
+        accountRepository.save(account);
         confirmationTokenEntity.setValidatedAt(LocalDateTime.now());
         confirmationTokenRepository.save(confirmationTokenEntity);
     }
 
     public void sendResetPasswordEmail(String email) throws MessagingException {
-        UserEntity account = userRepository.findByEmail(email)
+        AccountEntity account = accountRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Account not exists"));
         String generatedToken = saveConfirmationToken(account, 8, 600L, TokenType.PASSWORD_RESET_TOKEN);
         emailService.sendEmail(
@@ -284,11 +281,11 @@ public class AuthenticationService implements LogoutHandler {
         if (LocalDateTime.now().isAfter(confirmationTokenEntity.getExpiredAt())) {
             throw new RuntimeException("Reset code expired");
         }
-        UserEntity account = userRepository.findByEmail(email)
+        AccountEntity account = accountRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Account not exists"));
         account.setPassword(passwordEncoder.encode(newPassword));
         confirmationTokenEntity.setValidatedAt(LocalDateTime.now());
         confirmationTokenRepository.save(confirmationTokenEntity);
-        userRepository.save(account);
+        accountRepository.save(account);
     }
 }

@@ -39,7 +39,7 @@ public class JwtTokenEntity {
 
     @ManyToOne
     @JoinColumn(name = "USER_ID")
-    private UserEntity userEntity;
+    private AccountEntity accountEntity;
 
     @Override
     public final boolean equals(Object o) {

@@ -1,6 +1,6 @@
 package com.SWD.Order_Dish.config;
 
-import com.SWD.Order_Dish.repository.UserRepository;
+import com.SWD.Order_Dish.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,11 +16,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @RequiredArgsConstructor
 @Configuration
 public class ApplicationConfig {
-    private final UserRepository userRepository;
+    private final AccountRepository accountRepository;
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return email -> userRepository.findByEmail(email)
+        return email -> accountRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("Account not found"));
     }
 

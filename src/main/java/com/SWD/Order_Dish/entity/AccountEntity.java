@@ -26,7 +26,7 @@ import java.util.Objects;
 @Table(name = "ACCOUNT")
 @EntityListeners(AuditingEntityListener.class)
 @ToString
-public class UserEntity implements UserDetails {
+public class AccountEntity implements UserDetails {
     @Id
     @GeneratedValue(generator = "custom-id")
     @GenericGenerator(name = "custom-id", type = CustomerUUIDGenerator.class)
@@ -115,7 +115,7 @@ public class UserEntity implements UserDetails {
         Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
         Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
-        UserEntity that = (UserEntity) o;
+        AccountEntity that = (AccountEntity) o;
         return getUserId() != null && Objects.equals(getUserId(), that.getUserId());
     }
 

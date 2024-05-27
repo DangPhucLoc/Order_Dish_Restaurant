@@ -35,5 +35,5 @@ public class ConfirmationTokenEntity {
 
     @ManyToOne
     @JoinColumn(name = "USER_ID", nullable = false)
-    private UserEntity userEntity;
+    private AccountEntity accountEntity;
 }
