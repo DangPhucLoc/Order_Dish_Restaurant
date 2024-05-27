@@ -30,6 +30,17 @@ public enum Role {
                     Permission.STAFF_UPDATE,
                     Permission.STAFF_DELETE
             )
+    ),
+    CASHIER(
+            Set.of(
+                    Permission.MANAGER_READ,
+                    Permission.STAFF_UPDATE
+            )
+    ),
+    CHEF(
+            Set.of(
+                    Permission.MANAGER_READ
+            )
     );
     private final Set<Permission> permissions;
 
