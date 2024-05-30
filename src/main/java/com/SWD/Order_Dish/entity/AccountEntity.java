@@ -34,6 +34,9 @@ public class AccountEntity implements UserDetails {
     @Column(name = "EMAIL", nullable = false, unique = true)
     private String email;
 
+    @Column(name = "IMAGE_URL")
+    private String imageURL;
+
     @Column(name = "PASSWORD",nullable = false)
     private String password;
 

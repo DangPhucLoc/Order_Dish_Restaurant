@@ -25,6 +25,9 @@
         @Column(name = "DISH_ID", length = 36)
         private String dishId;
 
+        @Column(name = "IMAGE_URL", nullable = false)
+        private String imageURL;
+
         @Column(name = "NAME", nullable = false)
         private String name;
 
