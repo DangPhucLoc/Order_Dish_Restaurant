@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @ToString
 @Entity
 @AllArgsConstructor
+@Table(name = "CONFIRMATION_TOKEN")
 public class ConfirmationTokenEntity {
     @Id
     @GeneratedValue(generator = "custom-id")

@@ -13,9 +13,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Objects;
+import java.util.*;
 
 @Builder
 @Getter
@@ -77,6 +75,14 @@ public class AccountEntity implements UserDetails {
 
     @Column(name = "CREATED_BY")
     private String createdBy;
+
+    @ToString.Exclude
+    @OneToMany(mappedBy = "accountEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderEntity> orderEntities = new ArrayList<>();
+
+    @ToString.Exclude
+    @OneToMany(mappedBy = "accountEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderDetailEntity> orderDetailEntities = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
