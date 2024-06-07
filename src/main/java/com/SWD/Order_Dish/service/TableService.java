@@ -50,6 +50,10 @@ public class TableService {
 
     public TableResponse save(TableRequest tableRequest) {
         TableEntity table;
+        Optional<AreaEntity> area = areaRepository.findById(tableRequest.getAreaId());
+        if (area.isEmpty()) {
+            throw new CustomValidationException(List.of("No area was found!"));
+        }
 
         if (tableRequest.getTableId() != null) {
             LOGGER.info("Update table with id " + tableRequest.getTableId());
@@ -59,7 +63,7 @@ public class TableService {
             tableRepository.save(table);
         } else {
             LOGGER.info("Create new table");
-            table = createTable(tableRequest);
+            table = createTable(tableRequest, area.get());
             tableRepository.save(table);
         }
         return tableResponseGenerator(table);
@@ -74,13 +78,12 @@ public class TableService {
         }
     }
 
-    private TableEntity createTable(TableRequest request) {
+    private TableEntity createTable(TableRequest request, AreaEntity area) {
         TableEntity table = new TableEntity();
         setCommonFields(table, request);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         table.setCreatedBy(authentication.getName());
         table.setCreatedDate(new Date());
-        AreaEntity area = areaRepository.findById(request.getAreaId()).get();
         table.setAreaEntity(area);
         return table;
     }
