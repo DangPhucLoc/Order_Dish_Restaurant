@@ -62,17 +62,18 @@ public class OrderEntity {
     @OneToMany(mappedBy = "orderEntity", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PaymentEntity> paymentEntities = new ArrayList<>();
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade ={CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "USER_ID")
     private AccountEntity accountEntity;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "TABLE_ID")
     private TableEntity tableEntity;
 
     @ToString.Exclude
     @OneToMany(mappedBy = "orderEntity", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderDetailEntity> orderDetailEntities = new ArrayList<>();
+
 
     @Override
     public final boolean equals(Object o) {

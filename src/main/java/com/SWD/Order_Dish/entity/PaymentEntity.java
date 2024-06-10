@@ -40,7 +40,7 @@ public class PaymentEntity {
     @Column(name = "MODIFIED_BY", nullable = false)
     private String modifiedBy;
 
-    @ManyToOne
+    @ManyToOne(cascade ={CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "ORDER_ID")
     private OrderEntity orderEntity;
 

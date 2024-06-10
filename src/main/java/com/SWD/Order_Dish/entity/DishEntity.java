@@ -51,7 +51,7 @@
         @Column(name = "UPDATED_BY", nullable = false)
         private String updatedBy;
 
-        @ManyToOne(cascade = CascadeType.ALL, optional = false)
+        @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, optional = false)
         @JoinColumn(name = "DISH_CATEGORY_ID", referencedColumnName = "DISH_CATEGORY_ID", nullable = false)
         private DishCategoryEntity dishCategoryEntity;
 

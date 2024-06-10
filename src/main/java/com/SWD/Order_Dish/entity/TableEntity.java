@@ -44,7 +44,7 @@ public class TableEntity {
     @Column(name = "UPDATED_BY", nullable = false)
     private String updatedBy;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "AREA_ID")
     private AreaEntity areaEntity;
 
