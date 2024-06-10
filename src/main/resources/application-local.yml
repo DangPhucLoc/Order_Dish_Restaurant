@@ -33,3 +33,9 @@ spring:
           auth: true
           starttls:
             enable: true
+aws:
+  accessKeyId: ${AWS_ACCESS_KEY_ID}
+  secretKey: ${AWS_SECRET_ACCESS_KEY}
+  region: ${AWS_REGION}
+  bucketName: ${AWS_BUCKET_NAME}
+

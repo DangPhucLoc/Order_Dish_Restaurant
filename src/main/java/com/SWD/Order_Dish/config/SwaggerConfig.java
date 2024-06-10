@@ -25,7 +25,7 @@ import org.springframework.context.annotation.Configuration;
         servers = {
                 @Server(
                         description = "Deploy ENV",
-                        url = "https://sharemebackend.online"
+                        url = "https://localhost:8080"
                 ),
                 @Server(
                         description = "Docker ENV",
