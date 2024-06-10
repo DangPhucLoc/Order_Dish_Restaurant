@@ -52,11 +52,11 @@ public class OrderDetailEntity {
     @JoinColumn(name = "DISH_ID")
     private DishEntity dishEntity;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "ORDER_ID")
     private OrderEntity orderEntity;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "USER_ID")
     private AccountEntity accountEntity;
 
