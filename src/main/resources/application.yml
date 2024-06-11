@@ -40,7 +40,7 @@ spring:
     mode: HTML5
     cache: false
 aws:
-  accessKeyId: ${AWS_ACCESS_KEY_ID}
-  secretKey: ${AWS_SECRET_ACCESS_KEY}
-  region: ${AWS_REGION}
-  bucketName: ${AWS_BUCKET_NAME}
+  accessKeyId: ${AWS_ACCESS_KEY_ID:default_access_key}
+  secretKey: ${AWS_SECRET_ACCESS_KEY:default_secret_key}
+  region: ${AWS_REGION:default_region}
+  bucketName: ${AWS_BUCKET_NAME:default_bucket}
