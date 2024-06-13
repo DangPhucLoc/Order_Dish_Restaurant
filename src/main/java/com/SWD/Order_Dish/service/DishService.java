@@ -7,6 +7,7 @@ import com.SWD.Order_Dish.model.dish.DishRequest;
 import com.SWD.Order_Dish.model.dish.DishResponse;
 import com.SWD.Order_Dish.repository.DishRepository;
 import com.SWD.Order_Dish.repository.DishCategoryRepository;
+import com.SWD.Order_Dish.util.S3Util;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,18 +86,22 @@ public class DishService {
         dish.setCreatedBy(authentication.getName());
         dish.setCreatedDate(new Date());
         dish.setDishCategoryEntity(dishCategory);
+        dish.setImageURL(S3Util.uploadFile(request.getImageURL()));
         return dish;
     }
 
     private void updateDish(DishEntity dish, DishRequest request) {
         setCommonFields(dish, request);
+        if(request.getImageURL() != null) {
+            S3Util.deleteFile(dish.getImageURL());
+            dish.setImageURL(S3Util.uploadFile(request.getImageURL()));
+        }
         DishCategoryEntity dishCategory = dishCategoryRepository.findById(request.getDishCategoryId()).get();
         dish.setDishCategoryEntity(dishCategory);
     }
 
     private void setCommonFields(DishEntity dish, DishRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        dish.setImageURL(request.getImageURL());
         dish.setName(request.getName());
         dish.setDishPrice(request.getDishPrice());
         dish.setIsAvailable(request.getIsAvailable());

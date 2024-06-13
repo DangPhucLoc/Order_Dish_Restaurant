@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @NoArgsConstructor
@@ -13,9 +14,7 @@ public class DishRequest {
 
     private String dishId;
 
-    @NotNull(message = "Image URL cannot be null")
-    @NotBlank(message = "Image URL cannot be blank")
-    private String imageURL;
+    private MultipartFile imageURL;
 
     @NotNull(message = "Name cannot be null")
     @NotBlank(message = "Name cannot be blank")

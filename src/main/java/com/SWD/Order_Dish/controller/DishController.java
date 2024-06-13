@@ -46,7 +46,7 @@ public class DishController {
     }
 
     @PostMapping
-    public ResponseEntity<ResponseDTO> create(@Valid @RequestBody DishRequest request) {
+    public ResponseEntity<ResponseDTO> create(@Valid @ModelAttribute DishRequest request) {
         DishResponse result = dishService.save(request);
         return ResponseUtil.getObject(result,
                 HttpStatus.CREATED,
