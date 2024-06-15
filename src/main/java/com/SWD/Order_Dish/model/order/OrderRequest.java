@@ -1,7 +1,6 @@
 package com.SWD.Order_Dish.model.order;
 
 import com.SWD.Order_Dish.enums.Status;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
