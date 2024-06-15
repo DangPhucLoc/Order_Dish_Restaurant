@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -55,7 +56,7 @@ public class AccountService {
         if (accountRequest.getUserId() != null) {
             LOGGER.info("Update account with id " + accountRequest.getUserId());
             checkExist(accountRequest.getUserId());
-            if (acc.getUserId() == accountRequest.getUserId()) {
+            if (Objects.equals(acc.getUserId(), accountRequest.getUserId())) {
                 accountRequest.setPhoneNumber(null);
             }
             account = accountRepository.findById(accountRequest.getUserId()).get();
