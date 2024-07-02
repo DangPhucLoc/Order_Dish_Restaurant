@@ -25,7 +25,6 @@ import java.text.ParseException;
 @Validated
 public class UserController {
     private final AuthenticationService authenticationService;
-
     @PostMapping("/register")
     public ResponseEntity<ResponseDTO> register(@Valid @RequestBody RegisterRequest request) throws MessagingException, ParseException {
         RegisterResponse response = authenticationService.register(request);
@@ -38,7 +37,7 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<ResponseDTO> authenticate(@Valid @RequestBody AuthenticationRequest request) {
         return ResponseUtil.getObject(authenticationService.authenticate(request),
-                HttpStatus.CREATED,
+                HttpStatus.OK,
                 "Login successful"
         );
     }

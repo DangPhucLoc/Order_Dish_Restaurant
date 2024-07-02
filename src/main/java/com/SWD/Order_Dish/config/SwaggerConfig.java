@@ -25,11 +25,11 @@ import org.springframework.context.annotation.Configuration;
         servers = {
                 @Server(
                         description = "Deploy ENV",
-                        url = "https://localhost:8080"
+                        url = "http://localhost:8080"
                 ),
                 @Server(
                         description = "Docker ENV",
-                        url = "https://localhost:8081"
+                        url = "http://localhost:8081"
                 )
         }
 )

@@ -1,9 +1,9 @@
 package com.SWD.Order_Dish.controller;
 
 import com.SWD.Order_Dish.model._commonresponse.ResponseDTO;
-import com.SWD.Order_Dish.model.order.OrderRequest;
-import com.SWD.Order_Dish.model.order.OrderResponse;
-import com.SWD.Order_Dish.service.OrderService;
+import com.SWD.Order_Dish.model.account.AccountRequest;
+import com.SWD.Order_Dish.model.account.AccountResponse;
+import com.SWD.Order_Dish.service.AccountService;
 import com.SWD.Order_Dish.util.ResponseUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -12,50 +12,43 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/order")
+@RequestMapping("/account")
 @RequiredArgsConstructor
 @Validated
-public class OrderController {
-    private final OrderService orderService;
+public class AccountController {
+    private final AccountService accountService;
 
     @GetMapping
     public ResponseEntity<ResponseDTO> getAll() {
-        List<OrderResponse> result = orderService.findAll();
-        return ResponseUtil.getObject(result,
-                HttpStatus.OK,
-                "Objects fetched successfully");
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<ResponseDTO> getById(@PathVariable String id) {
-        OrderResponse result = orderService.findById(id);
+        List<AccountResponse> result = accountService.findAll();
         return ResponseUtil.getObject(result,
                 HttpStatus.OK,
                 "Object fetched successfully");
     }
 
-    @GetMapping("/byUser/{userId}")
-    public ResponseEntity<ResponseDTO> getAllByUserId(@PathVariable String userId) {
-        List<OrderResponse> result = orderService.findByUserId(userId);
+    @GetMapping("/{id}")
+    public ResponseEntity<ResponseDTO> getById(@PathVariable String id) {
+        AccountResponse result = accountService.findById(id);
         return ResponseUtil.getObject(result,
                 HttpStatus.OK,
-                "Objects fetched successfully");
+                "Object fetched successfully");
     }
 
     @PutMapping
-    public ResponseEntity<ResponseDTO> update(@Valid @RequestBody OrderRequest request) {
-        OrderResponse result = orderService.save(request);
+    public ResponseEntity<ResponseDTO> update(@Valid @RequestBody AccountRequest request) throws ParseException {
+        AccountResponse result = accountService.save(request);
         return ResponseUtil.getObject(result,
                 HttpStatus.OK,
                 "Object updated successfully");
     }
 
     @PostMapping
-    public ResponseEntity<ResponseDTO> create(@Valid @RequestBody OrderRequest request) {
-        OrderResponse result = orderService.save(request);
+    public ResponseEntity<ResponseDTO> create(@Valid @RequestBody AccountRequest request) throws ParseException {
+        AccountResponse result = accountService.save(request);
         return ResponseUtil.getObject(result,
                 HttpStatus.CREATED,
                 "Object created successfully");
@@ -63,7 +56,7 @@ public class OrderController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ResponseDTO> delete(@PathVariable String id) {
-        orderService.delete(id);
+        accountService.delete(id);
         return ResponseUtil.getObject(null,
                 HttpStatus.OK,
                 "Object deleted successfully");
