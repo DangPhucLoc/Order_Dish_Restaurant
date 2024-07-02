@@ -4,6 +4,7 @@ import com.SWD.Order_Dish.entity.AccountEntity;
 import com.SWD.Order_Dish.exception.CustomValidationException;
 import com.SWD.Order_Dish.model.account.AccountRequest;
 import com.SWD.Order_Dish.model.account.AccountResponse;
+import com.SWD.Order_Dish.model.account.UpdateAccountRequest;
 import com.SWD.Order_Dish.repository.AccountRepository;
 import com.SWD.Order_Dish.util.DateProcess;
 import lombok.RequiredArgsConstructor;
@@ -50,26 +51,68 @@ public class AccountService {
         return account.map(this::accountResponseGenerator).get();
     }
 
+    public List<AccountResponse> searchSortFilter(AccountRequest accountRequest) {
+        List<AccountEntity> accounts = accountRepository.searchSortFilter(
+                accountRequest.getEmail(),
+                accountRequest.getPhoneNumber(),
+                accountRequest.getFullName(),
+                accountRequest.getAddress(),
+                accountRequest.getRole() == null ? null : accountRequest.getRole().name()
+        );
+        return accounts.stream()
+                .map(this::accountResponseGenerator)
+                .toList();
+    }
+
     public AccountResponse save(AccountRequest accountRequest) throws ParseException {
+        AccountEntity acc = accountRepository.findAccountEntityByPhoneNumber(accountRequest.getPhoneNumber());
+        LOGGER.info("Create new account");
+        if (acc != null) {
+            throw new CustomValidationException(List.of("Phone has been used"));
+        }
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        AccountEntity account = new AccountEntity();
+        account.setEmail(accountRequest.getEmail());
+        account.setPassword(passwordEncoder.encode(accountRequest.getPassword()));
+        account.setCreatedBy(authentication.getName());
+        account.setImageURL(accountRequest.getImageURL());
+        account.setFullName(accountRequest.getFullName());
+        account.setBirthday(DateProcess.convertToSimpleDate(accountRequest.getBirthday()));
+        account.setPhoneNumber(accountRequest.getPhoneNumber());
+        account.setAddress(accountRequest.getAddress());
+        account.setRole(accountRequest.getRole());
+        account.setIsAvailable(accountRequest.getIsAvailable());
+        account.setIsEnable(accountRequest.getIsEnable());
+        account.setIsUnlocked(accountRequest.getIsUnlocked());
+        account.setModifiedBy(authentication.getName());
+        accountRepository.save(account);
+        return accountResponseGenerator(account);
+    }
+
+    public AccountResponse save(UpdateAccountRequest accountRequest) throws ParseException {
         AccountEntity account;
         AccountEntity acc = accountRepository.findAccountEntityByPhoneNumber(accountRequest.getPhoneNumber());
-        if (accountRequest.getUserId() != null) {
-            LOGGER.info("Update account with id " + accountRequest.getUserId());
-            checkExist(accountRequest.getUserId());
-            if (Objects.equals(acc.getUserId(), accountRequest.getUserId())) {
+        LOGGER.info("Update account with id " + accountRequest.getUserId());
+        checkExist(accountRequest.getUserId());
+        if (acc != null) {
+            if (Objects.equals(acc.getUserId(), accountRequest.getUserId()))
                 accountRequest.setPhoneNumber(null);
-            }
-            account = accountRepository.findById(accountRequest.getUserId()).get();
-            updateAccount(account, accountRequest);
-            accountRepository.save(account);
-        } else {
-            LOGGER.info("Create new account");
-            if (acc != null) {
-                throw new CustomValidationException(List.of("Phone has been used"));
-            }
-            account = createAccount(accountRequest);
-            accountRepository.save(account);
         }
+        account = accountRepository.findById(accountRequest.getUserId()).get();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        account.setImageURL(accountRequest.getImageURL());
+        account.setFullName(accountRequest.getFullName());
+        account.setBirthday(DateProcess.convertToSimpleDate(accountRequest.getBirthday()));
+        if (accountRequest.getPhoneNumber() != null) {
+            account.setPhoneNumber(accountRequest.getPhoneNumber());
+        }
+        account.setAddress(accountRequest.getAddress());
+        account.setRole(accountRequest.getRole());
+        account.setIsAvailable(accountRequest.getIsAvailable());
+        account.setIsEnable(accountRequest.getIsEnable());
+        account.setIsUnlocked(accountRequest.getIsUnlocked());
+        account.setModifiedBy(authentication.getName());
+        accountRepository.save(account);
         return accountResponseGenerator(account);
     }
 
@@ -80,36 +123,6 @@ public class AccountService {
             AccountEntity account = accountRepository.findById(id).get();
             accountRepository.delete(account);
         }
-    }
-
-    private AccountEntity createAccount(AccountRequest request) throws ParseException {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        AccountEntity account = AccountEntity.builder()
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .createdDate(new Date())
-                .createdBy(authentication.getName())
-                .build();
-        updateAccount(account, request);
-        return account;
-    }
-
-    private void updateAccount(AccountEntity account, AccountRequest request) throws ParseException {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        account.setImageURL(request.getImageURL());
-        account.setPassword(passwordEncoder.encode(request.getPassword()));
-        account.setFullName(request.getFullName());
-        account.setBirthday(DateProcess.convertToSimpleDate(request.getBirthday()));
-        if (request.getPhoneNumber() != null) {
-            account.setPhoneNumber(request.getPhoneNumber());
-        }
-        account.setAddress(request.getAddress());
-        account.setRole(request.getRole());
-        account.setIsAvailable(request.getIsAvailable());
-        account.setIsEnable(request.getIsEnable());
-        account.setIsUnlocked(request.getIsUnlocked());
-        account.setUpdatedDate(new Date());
-        account.setModifiedBy(authentication.getName());
     }
 
     private AccountResponse accountResponseGenerator(AccountEntity account) {
