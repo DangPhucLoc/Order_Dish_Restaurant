@@ -9,6 +9,7 @@
     import org.hibernate.proxy.HibernateProxy;
 
     import java.util.Date;
+    import java.util.List;
     import java.util.Objects;
 
     @Getter
@@ -56,9 +57,8 @@
         private DishCategoryEntity dishCategoryEntity;
 
         @ToString.Exclude
-        @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-        @JoinColumn(name = "ORDER_DETAIL_ID")
-        private OrderDetailEntity orderDetailEntity;
+        @OneToMany(mappedBy = "dishEntity",cascade = CascadeType.ALL, orphanRemoval = true)
+        private List<OrderDetailEntity> orderDetailEntities;
 
         @Override
         public final boolean equals(Object o) {

@@ -72,4 +72,5 @@ public class UserController {
         authenticationService.resetPassword(resetCode, email, newPassword);
         return ResponseUtil.getObject(null, HttpStatus.OK, "Password reset successfully");
     }
+
 }
