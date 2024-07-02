@@ -7,6 +7,7 @@ import com.SWD.Order_Dish.service.DishService;
 import com.SWD.Order_Dish.util.ResponseUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -36,7 +37,13 @@ public class DishController {
                 HttpStatus.OK,
                 "Object fetched successfully");
     }
-
+    @GetMapping("/category/{id}")
+    public ResponseEntity<ResponseDTO> getByCategory(@PathVariable String id) {
+        List<DishResponse> result = dishService.findByCategory(id);
+        return ResponseUtil.getObject(result,
+                HttpStatus.OK,
+                "Object fetched successfully");
+    }
     @PutMapping
     public ResponseEntity<ResponseDTO> update(@Valid @RequestBody DishRequest request) {
         DishResponse result = dishService.save(request);

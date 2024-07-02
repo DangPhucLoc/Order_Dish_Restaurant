@@ -51,6 +51,17 @@ public class OrderService {
         return order.map(this::orderResponseGenerator).get();
     }
 
+    public List<OrderResponse> findByUserId(String userId) {
+        LOGGER.info("Find orders by user id " + userId);
+        List<OrderEntity> orders = orderRepository.findByAccountEntity_UserId(userId);
+        if (orders.isEmpty()) {
+            LOGGER.warn("No orders were found!");
+        }
+        return orders.stream()
+                .map(this::orderResponseGenerator)
+                .collect(Collectors.toList());
+    }
+
     public OrderResponse save(OrderRequest orderRequest) {
         OrderEntity order;
         if (orderRequest.getOrderId() != null) {
