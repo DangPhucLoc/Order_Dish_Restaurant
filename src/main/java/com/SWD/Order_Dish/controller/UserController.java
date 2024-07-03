@@ -96,7 +96,7 @@ public class UserController {
                 "Object fetched successfully");
     }
 
-    @GetMapping("/search")
+    @PostMapping("/search")
     public ResponseEntity<ResponseDTO> searchUser(@RequestBody AccountRequest accountRequest) {
         List<AccountResponse> result = accountService.searchSortFilter(accountRequest);
         return ResponseUtil.getObject(result,

@@ -63,6 +63,7 @@ public class AuthenticationService implements LogoutHandler {
         return AuthenticationResponse.builder()
                 .accessToken(jwtToken)
                 .refreshToken(refreshToken)
+                .accountId(account.getUserId())
                 .build();
     }
 
