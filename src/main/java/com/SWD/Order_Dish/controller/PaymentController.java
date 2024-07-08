@@ -1,9 +1,9 @@
 package com.SWD.Order_Dish.controller;
 
 import com.SWD.Order_Dish.model._commonresponse.ResponseDTO;
-import com.SWD.Order_Dish.model.account.AccountRequest;
-import com.SWD.Order_Dish.model.account.AccountResponse;
-import com.SWD.Order_Dish.service.AccountService;
+import com.SWD.Order_Dish.model.payment.PaymentRequest;
+import com.SWD.Order_Dish.model.payment.PaymentResponse;
+import com.SWD.Order_Dish.service.PaymentService;
 import com.SWD.Order_Dish.util.ResponseUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -12,43 +12,42 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.text.ParseException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/account")
+@RequestMapping("/payment")
 @RequiredArgsConstructor
 @Validated
-public class AccountController {
-    private final AccountService accountService;
+public class PaymentController {
+    private final PaymentService paymentService;
 
     @GetMapping
     public ResponseEntity<ResponseDTO> getAll() {
-        List<AccountResponse> result = accountService.findAll();
+        List<PaymentResponse> result = paymentService.findAll();
         return ResponseUtil.getObject(result,
                 HttpStatus.OK,
-                "Object fetched successfully");
+                "Objects fetched successfully");
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ResponseDTO> getById(@PathVariable String id) {
-        AccountResponse result = accountService.findById(id);
+        PaymentResponse result = paymentService.findById(id);
         return ResponseUtil.getObject(result,
                 HttpStatus.OK,
                 "Object fetched successfully");
     }
 
     @PutMapping
-    public ResponseEntity<ResponseDTO> update(@Valid @RequestBody AccountRequest request) throws ParseException {
-        AccountResponse result = accountService.save(request);
+    public ResponseEntity<ResponseDTO> update(@Valid @RequestBody PaymentRequest request) {
+        PaymentResponse result = paymentService.save(request);
         return ResponseUtil.getObject(result,
                 HttpStatus.OK,
                 "Object updated successfully");
     }
 
     @PostMapping
-    public ResponseEntity<ResponseDTO> create(@Valid @RequestBody AccountRequest request) throws ParseException {
-        AccountResponse result = accountService.save(request);
+    public ResponseEntity<ResponseDTO> create(@Valid @RequestBody PaymentRequest request) {
+        PaymentResponse result = paymentService.save(request);
         return ResponseUtil.getObject(result,
                 HttpStatus.CREATED,
                 "Object created successfully");
@@ -56,7 +55,7 @@ public class AccountController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ResponseDTO> delete(@PathVariable String id) {
-        accountService.delete(id);
+        paymentService.delete(id);
         return ResponseUtil.getObject(null,
                 HttpStatus.OK,
                 "Object deleted successfully");

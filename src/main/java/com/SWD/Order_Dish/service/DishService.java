@@ -49,6 +49,17 @@ public class DishService {
         return dish.map(this::dishResponseGenerator).get();
     }
 
+    public List<DishResponse> findByCategory(String id) {
+        LOGGER.info("Find dish with category " + id);
+        List<DishEntity> dishes = dishRepository.findByDishCategoryEntity_DishCateGoryId(id);
+        if (dishes.isEmpty()) {
+            LOGGER.warn("No dish was found!");
+        }
+        return dishes.stream()
+                .map(this::dishResponseGenerator)
+                .collect(Collectors.toList());
+    }
+
     public DishResponse save(DishRequest dishRequest) {
         DishEntity dish;
         Optional<DishCategoryEntity> dishCategory = dishCategoryRepository.findById(dishRequest.getDishCategoryId());
