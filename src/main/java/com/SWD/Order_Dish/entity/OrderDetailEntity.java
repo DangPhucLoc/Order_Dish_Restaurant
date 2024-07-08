@@ -48,7 +48,7 @@ public class OrderDetailEntity {
     @Column(name = "UPDATED_BY", nullable = false)
     private String updatedBy;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "DISH_ID")
     private DishEntity dishEntity;
 
