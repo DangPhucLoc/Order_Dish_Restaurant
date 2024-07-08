@@ -12,6 +12,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderDetailRequest {
+    private String orderDetailId;
+
     @NotNull(message = "cannot be null")
     @NotBlank(message = "cannot be blank")
     private String orderId;
