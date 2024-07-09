@@ -31,7 +31,7 @@ public class OrderDetailService {
 // get orderDetails by accountId
     public List<OrderDetailResponse> getByAccountId(String accountId) {
         LOGGER.info("get order detail by account id");
-        List<OrderDetailEntity> orderDetails = orderDetailRepository.findByAccountEntity_AccountId(accountId);
+        List<OrderDetailEntity> orderDetails = orderDetailRepository.findByAccountEntity_UserId(accountId);
         List<OrderDetailResponse> responses = new ArrayList<>();
         for (OrderDetailEntity orderDetailEntity : orderDetails) {
             OrderDetailResponse response = create(orderDetailEntity);
