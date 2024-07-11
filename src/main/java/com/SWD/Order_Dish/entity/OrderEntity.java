@@ -28,6 +28,8 @@ public class OrderEntity {
     @Column(name = "ORDER_ID", length = 36)
     private String orderId;
 
+    @Column(name = "NAME", nullable = false)
+    private String name;
     @Column(name = "HAVE_DEPOSIT", nullable = false)
     private boolean haveDeposit;
 

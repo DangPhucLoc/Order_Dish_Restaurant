@@ -14,6 +14,8 @@ public class OrderResponse {
 
     private String orderId;
 
+    private String orderName;
+
     private boolean haveDeposit;
 
     private double totalPrice;

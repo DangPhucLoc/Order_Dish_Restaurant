@@ -117,6 +117,7 @@ public class OrderService {
     private OrderEntity createOrder(OrderRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         OrderEntity order = new OrderEntity();
+        order.setName(request.getOrderName());
         order.setHaveDeposit(request.isHaveDeposit());
         order.setTotalPrice(request.getTotalPrice());
         order.setAdvance(request.getAdvance());
@@ -133,6 +134,7 @@ public class OrderService {
 
     private void updateOrder(OrderEntity order, OrderRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        order.setName(request.getOrderName());
         order.setHaveDeposit(request.isHaveDeposit());
         order.setTotalPrice(request.getTotalPrice());
         order.setAdvance(request.getAdvance());
@@ -163,6 +165,7 @@ public class OrderService {
     private OrderResponse orderResponseGenerator(OrderEntity order) {
         return new OrderResponse(
                 order.getOrderId(),
+                order.getName(),
                 order.isHaveDeposit(),
                 order.getTotalPrice(),
                 order.getAdvance(),

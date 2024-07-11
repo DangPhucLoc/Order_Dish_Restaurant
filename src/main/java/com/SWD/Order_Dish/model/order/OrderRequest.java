@@ -20,6 +20,10 @@ public class OrderRequest {
     @NotNull(message = "Deposit status cannot be null")
     private boolean haveDeposit;
 
+    @NotNull(message = "cannot be null")
+    @NotBlank(message = "cannot be blank")
+    private String orderName;
+
     @NotNull(message = "Total price cannot be null")
     private double totalPrice;
 
