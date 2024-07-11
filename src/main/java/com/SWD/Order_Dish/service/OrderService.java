@@ -1,12 +1,15 @@
 package com.SWD.Order_Dish.service;
 
 import com.SWD.Order_Dish.entity.AccountEntity;
+import com.SWD.Order_Dish.entity.OrderDetailEntity;
 import com.SWD.Order_Dish.entity.OrderEntity;
 import com.SWD.Order_Dish.entity.TableEntity;
 import com.SWD.Order_Dish.exception.CustomValidationException;
 import com.SWD.Order_Dish.model.order.OrderRequest;
 import com.SWD.Order_Dish.model.order.OrderResponse;
+import com.SWD.Order_Dish.model.orderdetail.OrderDetailRequest;
 import com.SWD.Order_Dish.repository.AccountRepository;
+import com.SWD.Order_Dish.repository.OrderDetailRepository;
 import com.SWD.Order_Dish.repository.OrderRepository;
 import com.SWD.Order_Dish.repository.TableRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +30,7 @@ public class OrderService {
 
     private final Logger LOGGER = LoggerFactory.getLogger(OrderService.class);
     private final OrderRepository orderRepository;
+    private final OrderDetailRepository orderDetailRepository;
     private final AccountRepository accountRepository;
     private final TableRepository tableRepository;
 
@@ -70,12 +74,35 @@ public class OrderService {
             order = orderRepository.findById(orderRequest.getOrderId()).get();
             updateOrder(order, orderRequest);
             orderRepository.save(order);
+            LOGGER.info("Update order details");
+            if(!orderRequest.getOrderDetails().isEmpty()) {
+                for(OrderDetailRequest orderDetailRequest : orderRequest.getOrderDetails()) {
+                    OrderDetailEntity orderDetail = getOrderDetailEntity(orderDetailRequest, order);
+                    orderDetailRepository.save(orderDetail);
+                }
+            }
         } else {
             LOGGER.info("Create new order");
             order = createOrder(orderRequest);
             orderRepository.save(order);
+            LOGGER.info("Create new order details");
+            for(OrderDetailRequest orderDetailRequest : orderRequest.getOrderDetails()) {
+                OrderDetailEntity orderDetail = getOrderDetailEntity(orderDetailRequest, order);
+                orderDetailRepository.save(orderDetail);
+            }
         }
         return orderResponseGenerator(order);
+    }
+
+    private OrderDetailEntity getOrderDetailEntity(OrderDetailRequest orderDetailRequest, OrderEntity order) {
+        OrderDetailEntity orderDetail = new OrderDetailEntity();
+        orderDetail.setOrderEntity(order);
+        orderDetail.setDishEntity(orderDetail.getDishEntity());
+        orderDetail.setDescription(orderDetailRequest.getDescription());
+        orderDetail.setStatus(orderDetailRequest.getStatus());
+        orderDetail.setQuantity(orderDetailRequest.getQuantity());
+        orderDetail.setUpdatedBy(orderDetailRequest.getPersonSaveId());
+        return orderDetail;
     }
 
     public void delete(String id) {

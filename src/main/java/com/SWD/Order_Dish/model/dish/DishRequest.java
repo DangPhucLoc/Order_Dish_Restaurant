@@ -20,6 +20,10 @@ public class DishRequest {
     @NotBlank(message = "Name cannot be blank")
     private String name;
 
+    @NotNull(message = "Ingredients cannot be null")
+    @NotBlank(message = "Ingredients cannot be blank")
+    private String ingredients;
+
     @NotNull(message = "Dish price cannot be null")
     private double dishPrice;
 

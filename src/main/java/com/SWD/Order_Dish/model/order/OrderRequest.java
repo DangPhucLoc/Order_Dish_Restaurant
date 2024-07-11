@@ -1,10 +1,14 @@
 package com.SWD.Order_Dish.model.order;
 
 import com.SWD.Order_Dish.enums.Status;
+import com.SWD.Order_Dish.model.orderdetail.OrderDetailRequest;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -26,7 +30,13 @@ public class OrderRequest {
     @NotNull(message = "Status cannot be null")
     private Status status;
 
+    @NotNull(message = "cannot be null")
+    @NotBlank(message = "cannot be blank")
     private String userId;
 
+    @NotNull(message = "cannot be null")
+    @NotBlank(message = "cannot be blank")
     private String tableId;
+
+    private List<OrderDetailRequest> orderDetails;
 }

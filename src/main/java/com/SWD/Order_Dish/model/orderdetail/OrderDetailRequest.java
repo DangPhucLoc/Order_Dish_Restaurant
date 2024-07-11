@@ -32,7 +32,5 @@ public class OrderDetailRequest {
     @Min(value = 1, message = "must be greater than 0")
     private Integer quantity;
 
-    @NotNull(message = "cannot be null")
-    @NotBlank(message = "cannot be blank")
     private String personSaveId;
 }

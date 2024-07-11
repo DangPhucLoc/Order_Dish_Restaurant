@@ -35,6 +35,9 @@
         @Column(name = "DISH_PRICE", nullable = false)
         private double dishPrice;
 
+        @Column(name = "INGREDIENTS", nullable = false)
+        private String ingredients;
+
         @Column(name = "IS_AVAILABLE", nullable = false)
         private Boolean isAvailable;
 

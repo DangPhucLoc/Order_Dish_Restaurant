@@ -113,6 +113,7 @@ public class DishService {
 
     private void setCommonFields(DishEntity dish, DishRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        dish.setIngredients(request.getIngredients());
         dish.setName(request.getName());
         dish.setDishPrice(request.getDishPrice());
         dish.setIsAvailable(request.getIsAvailable());
