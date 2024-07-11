@@ -86,6 +86,7 @@ public class DishService {
             LOGGER.info("Delete dish with id " + id);
             checkExist(id);
             DishEntity dish = dishRepository.findById(id).get();
+            S3Util.deleteFile(dish.getImageURL());
             dishRepository.delete(dish);
         }
     }
@@ -98,6 +99,9 @@ public class DishService {
         dish.setCreatedDate(new Date());
         dish.setDishCategoryEntity(dishCategory);
         dish.setImageURL(S3Util.uploadFile(request.getImageURL()));
+        if(request.getImageURL() != null) {
+            dish.setImageURL(S3Util.uploadFile(request.getImageURL()));
+        }
         return dish;
     }
 
