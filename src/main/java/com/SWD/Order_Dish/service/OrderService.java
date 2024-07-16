@@ -102,6 +102,7 @@ public class OrderService {
         orderDetail.setStatus(orderDetailRequest.getStatus());
         orderDetail.setQuantity(orderDetailRequest.getQuantity());
         orderDetail.setUpdatedBy(orderDetailRequest.getPersonSaveId());
+        orderDetail.setCreatedBy(orderDetailRequest.getPersonSaveId());
         return orderDetail;
     }
 
