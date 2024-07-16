@@ -97,18 +97,21 @@ public class OrderDetailService {
             LOGGER.error("Account not found");
             return null;
         }
-    OrderDetailEntity checkOrderDetail = orderDetailRepository.findById(request.getOrderDetailId()).orElse(null);
-    if(checkOrderDetail != null){
-        LOGGER.info("update order detail");
-        checkOrderDetail.setOrderEntity(order);
-        checkOrderDetail.setDescription(request.getDescription());
-        checkOrderDetail.setStatus(request.getStatus());
-        checkOrderDetail.setQuantity(request.getQuantity());
-        checkOrderDetail.setCreatedBy(request.getPersonSaveId());
-        checkOrderDetail.setUpdatedBy(request.getPersonSaveId());
-        checkOrderDetail.setDishEntity(dish);
-        orderDetailRepository.save(checkOrderDetail);
-    }
+        if(request.getOrderDetailId() != null) {
+            OrderDetailEntity checkOrderDetail = orderDetailRepository.findById(request.getOrderDetailId()).orElse(null);
+            if (checkOrderDetail != null) {
+                LOGGER.info("update order detail");
+                checkOrderDetail.setOrderEntity(order);
+                checkOrderDetail.setDescription(request.getDescription());
+                checkOrderDetail.setStatus(request.getStatus());
+                checkOrderDetail.setQuantity(request.getQuantity());
+                checkOrderDetail.setCreatedBy(request.getPersonSaveId());
+                checkOrderDetail.setUpdatedBy(request.getPersonSaveId());
+                checkOrderDetail.setDishEntity(dish);
+                checkOrderDetail.setAccountEntity(account);
+                orderDetailRepository.save(checkOrderDetail);
+            }
+        }
     OrderDetailEntity orderDetailEntity = new OrderDetailEntity();
     orderDetailEntity.setOrderEntity(order);
     orderDetailEntity.setDescription(request.getDescription());
@@ -117,6 +120,7 @@ public class OrderDetailService {
     orderDetailEntity.setCreatedBy(request.getPersonSaveId());
     orderDetailEntity.setUpdatedBy(request.getPersonSaveId());
     orderDetailEntity.setDishEntity(dish);
+    orderDetailEntity.setAccountEntity(account);
 
     orderDetailRepository.save(orderDetailEntity);
     return create(orderDetailEntity);

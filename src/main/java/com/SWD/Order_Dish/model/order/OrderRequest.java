@@ -2,6 +2,7 @@ package com.SWD.Order_Dish.model.order;
 
 import com.SWD.Order_Dish.enums.Status;
 import com.SWD.Order_Dish.model.orderdetail.OrderDetailRequest;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
