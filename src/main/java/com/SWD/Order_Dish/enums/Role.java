@@ -31,12 +31,6 @@ public enum Role {
                     Permission.STAFF_DELETE
             )
     ),
-    CASHIER(
-            Set.of(
-                    Permission.MANAGER_READ,
-                    Permission.STAFF_UPDATE
-            )
-    ),
     CHEF(
             Set.of(
                     Permission.MANAGER_READ

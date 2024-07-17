@@ -2,9 +2,11 @@ package com.SWD.Order_Dish.service;
 
 import com.SWD.Order_Dish.entity.AreaEntity;
 import com.SWD.Order_Dish.entity.TableEntity;
+import com.SWD.Order_Dish.enums.Status;
 import com.SWD.Order_Dish.exception.CustomValidationException;
 import com.SWD.Order_Dish.model.table.TableRequest;
 import com.SWD.Order_Dish.model.table.TableResponse;
+import com.SWD.Order_Dish.repository.OrderRepository;
 import com.SWD.Order_Dish.repository.TableRepository;
 import com.SWD.Order_Dish.repository.AreaRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,7 @@ public class TableService {
     private final Logger LOGGER = LoggerFactory.getLogger(TableService.class);
     private final TableRepository tableRepository;
     private final AreaRepository areaRepository;
+    private final OrderRepository orderRepository;
 
     public List<TableResponse> findAll() {
         LOGGER.info("Find all tables");
@@ -33,6 +36,15 @@ public class TableService {
         if (tables.isEmpty()) {
             LOGGER.warn("No tables were found!");
         }
+
+        List<TableEntity> inAvailableTables = tableRepository.findByIsAvailable(false);
+        inAvailableTables.forEach(table -> {
+            if (orderRepository.findByTableEntityAndStatus(table, Status.DONE) != null || orderRepository.findByTableEntityAndStatus(table, Status.CANCEL) != null){
+                table.setIsAvailable(true);
+                tableRepository.save(table);
+            }
+        });
+
         return tables.stream()
                 .map(this::tableResponseGenerator)
                 .collect(Collectors.toList());

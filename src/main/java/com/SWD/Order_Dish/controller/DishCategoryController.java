@@ -18,6 +18,7 @@ import java.util.List;
 @RequestMapping("/dishCategory")
 @RequiredArgsConstructor
 @Validated
+@CrossOrigin
 public class DishCategoryController {
     private final DishCategoryService dishCategoryService;
 

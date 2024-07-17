@@ -137,6 +137,7 @@ public class DishService {
         dishResponse.setUpdatedDate(dish.getUpdatedDate());
         dishResponse.setUpdatedBy(dish.getUpdatedBy());
         dishResponse.setDishCategoryId(dish.getDishCategoryEntity().getDishCateGoryId());
+        dishResponse.setIngredients(dish.getIngredients());
         return dishResponse;
     }
 

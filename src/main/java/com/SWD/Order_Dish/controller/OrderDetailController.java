@@ -17,6 +17,7 @@ import java.util.List;
 @RequestMapping("/orderDetail")
 @RequiredArgsConstructor
 @Validated
+@CrossOrigin
 public class OrderDetailController {
     private final OrderDetailService orderDetailService;
     @GetMapping

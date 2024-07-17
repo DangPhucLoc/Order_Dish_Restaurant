@@ -30,4 +30,6 @@ public class DishResponse {
     private String updatedBy;
 
     private String dishCategoryId;
+
+    private String ingredients;
 }

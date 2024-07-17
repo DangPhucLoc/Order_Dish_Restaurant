@@ -4,6 +4,7 @@ import com.SWD.Order_Dish.entity.AccountEntity;
 import com.SWD.Order_Dish.entity.OrderDetailEntity;
 import com.SWD.Order_Dish.entity.OrderEntity;
 import com.SWD.Order_Dish.entity.TableEntity;
+import com.SWD.Order_Dish.enums.Status;
 import com.SWD.Order_Dish.exception.CustomValidationException;
 import com.SWD.Order_Dish.model.order.OrderRequest;
 import com.SWD.Order_Dish.model.order.OrderResponse;
@@ -84,6 +85,11 @@ public class OrderService {
         } else {
             LOGGER.info("Create new order");
             order = createOrder(orderRequest);
+            TableEntity table = tableRepository.findByTableId(orderRequest.getTableId());
+            if (table != null) {
+                table.setIsAvailable(false);
+                tableRepository.save(table);
+            }
             orderRepository.save(order);
             LOGGER.info("Create new order details");
             for(OrderDetailRequest orderDetailRequest : orderRequest.getOrderDetails()) {

@@ -18,6 +18,7 @@ import java.util.List;
 @RequestMapping("/table")
 @RequiredArgsConstructor
 @Validated
+@CrossOrigin
 public class TableController {
     private final TableService tableService;
 

@@ -17,6 +17,7 @@ import java.util.List;
 @RequestMapping("/area")
 @RequiredArgsConstructor
 @Validated
+@CrossOrigin
 public class AreaController {
     private final AreaService areaService;
 

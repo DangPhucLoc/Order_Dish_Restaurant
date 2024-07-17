@@ -19,6 +19,7 @@ import java.util.List;
 @RequestMapping("/dish")
 @RequiredArgsConstructor
 @Validated
+@CrossOrigin
 public class DishController {
     private final DishService dishService;
 

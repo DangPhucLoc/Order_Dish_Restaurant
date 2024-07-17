@@ -28,6 +28,7 @@ import java.util.List;
 @RequestMapping("/account")
 @RequiredArgsConstructor
 @Validated
+@CrossOrigin
 public class UserController {
     private final AuthenticationService authenticationService;
     @PostMapping("/register")

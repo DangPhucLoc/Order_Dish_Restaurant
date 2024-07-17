@@ -18,6 +18,7 @@ import java.util.List;
 @RequestMapping("/payment")
 @RequiredArgsConstructor
 @Validated
+@CrossOrigin
 public class PaymentController {
     private final PaymentService paymentService;
 
