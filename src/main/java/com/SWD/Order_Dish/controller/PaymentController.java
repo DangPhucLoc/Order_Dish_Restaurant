@@ -62,6 +62,4 @@ public class PaymentController {
                 "Object deleted successfully");
     }
 
-
-
 }

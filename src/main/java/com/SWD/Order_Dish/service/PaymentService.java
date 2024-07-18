@@ -2,6 +2,7 @@ package com.SWD.Order_Dish.service;
 
 import com.SWD.Order_Dish.entity.OrderEntity;
 import com.SWD.Order_Dish.entity.PaymentEntity;
+import com.SWD.Order_Dish.enums.Status;
 import com.SWD.Order_Dish.exception.CustomValidationException;
 import com.SWD.Order_Dish.model.payment.PaymentRequest;
 import com.SWD.Order_Dish.model.payment.PaymentResponse;
@@ -82,7 +83,11 @@ public class PaymentService {
         payment.setIsAvailable(request.getIsAvailable());
         payment.setCreatedDate(new Date());
         payment.setModifiedBy(authentication.getName());
-        payment.setOrderEntity(getOrderEntity(request.getOrderId()));
+        OrderEntity order = getOrderEntity(request.getOrderId());
+        payment.setOrderEntity(order);
+        if (order.getAdvance() + payment.getPrice() == order.getTotalPrice()) {
+            order.setStatus(Status.DONE);
+        }
         return payment;
     }
 
@@ -92,13 +97,14 @@ public class PaymentService {
         payment.setPaymentTime(request.getPaymentTime());
         payment.setIsAvailable(request.getIsAvailable());
         payment.setModifiedBy(authentication.getName());
-        payment.setOrderEntity(getOrderEntity(request.getOrderId()));
+        OrderEntity order = getOrderEntity(request.getOrderId());
+        payment.setOrderEntity(order);
+        if (order.getAdvance() + payment.getPrice() == order.getTotalPrice()) {
+            order.setStatus(Status.DONE);
+        }
     }
 
     private OrderEntity getOrderEntity(String orderId) {
-        if (orderId == null) {
-            return null;
-        }
         return orderRepository.findById(orderId)
                 .orElseThrow(() -> new CustomValidationException(List.of("No order was found!")));
     }
