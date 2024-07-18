@@ -63,6 +63,7 @@ public class AuthenticationService implements LogoutHandler {
         return AuthenticationResponse.builder()
                 .accessToken(jwtToken)
                 .refreshToken(refreshToken)
+                .accountId(account.getUserId())
                 .build();
     }
 
@@ -79,14 +80,18 @@ public class AuthenticationService implements LogoutHandler {
                     .responseMessage(ResponseMessageEnum.DUPLICATED_PHONE_NUMBER.getDetail())
                     .build();
         }
+        if(request.getRole() == null) {
+            request.setRole(Role.STAFF);
+        }
+
         AccountEntity account = AccountEntity.builder()
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .fullName(request.getDisplayName())
                 .role(request.getRole() == Role.MANAGER ? Role.MANAGER : Role.STAFF)
                 .isEnable(request.getRole() == Role.MANAGER)
-                .isUnlocked(true)
-                .isAvailable(true)
+                .isUnlocked(false)
+                .isAvailable(false)
                 .birthday(DateProcess.convertToSimpleDate(request.getBirthday()))
                 .address(request.getAddress())
                 .phoneNumber(request.getPhoneNumber())
@@ -257,6 +262,8 @@ public class AuthenticationService implements LogoutHandler {
         }
         AccountEntity account = confirmationTokenEntity.getAccountEntity();
         account.setIsEnable(true);
+        account.setIsAvailable(true);
+        account.setIsUnlocked(true);
         accountRepository.save(account);
         confirmationTokenEntity.setValidatedAt(LocalDateTime.now());
         confirmationTokenRepository.save(confirmationTokenEntity);

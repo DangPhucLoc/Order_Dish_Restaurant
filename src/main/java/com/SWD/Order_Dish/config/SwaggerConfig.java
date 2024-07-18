@@ -29,7 +29,7 @@ import org.springframework.context.annotation.Configuration;
                 ),
                 @Server(
                         description = "Docker ENV",
-                        url = "https://localhost:8081"
+                        url = "http://localhost:8081"
                 )
         }
 )
