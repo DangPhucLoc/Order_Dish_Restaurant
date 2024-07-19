@@ -101,14 +101,15 @@ public class OrderService {
     }
 
     private OrderDetailEntity getOrderDetailEntity(OrderDetailRequest orderDetailRequest, OrderEntity order) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         OrderDetailEntity orderDetail = new OrderDetailEntity();
         orderDetail.setOrderEntity(order);
         orderDetail.setDishEntity(orderDetail.getDishEntity());
         orderDetail.setDescription(orderDetailRequest.getDescription());
         orderDetail.setStatus(orderDetailRequest.getStatus());
         orderDetail.setQuantity(orderDetailRequest.getQuantity());
-        orderDetail.setUpdatedBy(orderDetailRequest.getPersonSaveId());
-        orderDetail.setCreatedBy(orderDetailRequest.getPersonSaveId());
+        orderDetail.setUpdatedBy(authentication.getName());
+        orderDetail.setCreatedBy(authentication.getName());
         return orderDetail;
     }
 
